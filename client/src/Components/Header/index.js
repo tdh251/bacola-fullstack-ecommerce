@@ -3,7 +3,9 @@ import Logo from "../../assets/images/logo.png";
 import LocationSelector from "./LocationSelector";
 import SearchBar from "./SearchBar";
 import PersonalAccount from "./PersonalAccount";
+import Navigation from "./Navigation";
 import { FaCartShopping } from "react-icons/fa6";
+import CatSelector from "./CatSelector";
 
 function Header() {
    return (
@@ -40,6 +42,10 @@ function Header() {
                            </button>
                         </div>
                      </div>
+                  </div>
+                  <div className="row headerRow">
+                     <CatSelector />
+                     <Navigation />
                   </div>
                </div>
             </header>
