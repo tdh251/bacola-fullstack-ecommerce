@@ -1,0 +1,33 @@
+# dependencies 
+node_modules/
+.pnp
+.pnp.js
+
+# misc
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# logs 
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+
+# CLIENT (React/Vite)
+client/dist/
+client/build/
+client/coverage/
+
+
+# SERVER (NestJS)
+server/dist/
+
+server/coverage/
+
+server/prisma/*.db
+server/prisma/*.db-journal
