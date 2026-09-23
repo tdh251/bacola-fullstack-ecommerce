@@ -1,0 +1,174 @@
+* {
+   margin: 0;
+   padding: 0;
+}
+
+/* @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap");
+
+body {
+   font-family: "Mulish", sans-serif;
+}
+
+input {
+   outline: none;
+   box-shadow: none;
+   border: 1px solid transparent;
+   font-family: "Mulish";
+}
+
+button {
+   background-color: transparent;
+   border: none;
+}
+
+.d-flex-center {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.d-inline-flex-center {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.bg-blue,
+.color-blue {
+   background-color: #233a95;
+}
+
+.headerWrapper .top-strip {
+   padding: 8px 0px;
+}
+
+.headerWrapper .top-strip p {
+   color: #fff;
+   font-size: 12px;
+   font-weight: 500;
+}
+.headerWrapper .header {
+   width: 100%;
+   height: auto;
+   padding: 15px 0;
+}
+
+.logoWrapper {
+   max-width: 164px;
+   flex-shrink: 0;
+}
+.logoWrapper .logo {
+   width: 100%;
+}
+
+.header .headerRow {
+   gap: 30px;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.countryDropdown {
+   width: 100%;
+   max-width: 180px;
+   background-color: #ffffff;
+   color: #3e445a;
+   border: 1px solid #d9d9e9;
+   padding: 5px 18px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+   border-radius: 7px;
+   gap: 10px;
+}
+
+.countryDropdown .location-label {
+   font-size: 10px;
+   opacity: 0.5;
+}
+.countryDropdown .current-location {
+   font-size: 13px;
+   font-weight: 600;
+   white-space: nowrap;
+}
+
+.header .headerForm {
+   flex-grow: 1;
+   gap: 15px;
+   max-width: 790px;
+}
+
+.header .formGroup {
+   flex-grow: 1;
+}
+.header .searchForm {
+   flex-grow: 1;
+}
+
+.searchForm .formGroup {
+   position: relative;
+}
+
+.searchForm .searchField {
+   padding-inline: 30px 60px;
+   height: 60px;
+   font-size: 15px;
+   background-color: #f3f4f7;
+   color: #202435;
+   width: 100%;
+   border-radius: 7px;
+}
+
+.searchForm .searchSubmit {
+   position: absolute;
+   width: 60px;
+   height: 60px;
+   right: 0;
+   top: 0;
+   background-color: transparent;
+   border: none;
+   font-size: 26px;
+}
+
+.persionalAccount button {
+   width: 42px;
+   height: 42px;
+   background-color: #ffffff;
+   border: 1px solid #e2e4ec;
+   border-radius: 50%;
+}
+
+.headerUser {
+   gap: 15px;
+   align-items: center;
+}
+
+.cartIcon {
+   gap: 15px;
+}
+
+.cartIcon .amount {
+   font-family: "Dosis", sans-serif;
+   font-weight: 600;
+}
+
+.cartIcon button {
+   position: relative;
+   width: 42px;
+   height: 42px;
+   border-radius: 50%;
+   color: #ea2b0f;
+   border: 1px solid #fff1ee;
+   background-color: #fff1ee;
+}
+
+.cartIcon button .quantity {
+   position: absolute;
+   top: 0px;
+   right: -4px;
+   font-size: 10px;
+   background-color: #ea2b0f;
+   color: #ffffff;
+   min-width: 18px;
+   height: 18px;
+   border-radius: 50%;
+}
