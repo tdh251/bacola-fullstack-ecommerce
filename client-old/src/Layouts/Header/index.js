@@ -48,6 +48,7 @@ function Header() {
                      <Navigation />
                   </div>
                </div>
+               <hr className="headerLine" />
             </header>
          </div>
       </>

@@ -7,12 +7,12 @@ const LOCATIONS = [
    { id: "arizona", name: "Thanh Hóa", minPrice: "$150" },
    { id: "california", name: "Hải Phòng", minPrice: "$110" },
    { id: "colorado", name: "Nghệ An", minPrice: "$140" },
-   { id: "florida", name: "Quảng Nam", minPrice: "$160" },
-   { id: "florida", name: "Hà Tĩnh", minPrice: "$160" },
-   { id: "florida", name: "Quảng Ninh", minPrice: "$160" },
-   { id: "florida", name: "Hưng Yên", minPrice: "$160" },
-   { id: "florida", name: "Hồ Chí Minh", minPrice: "$160" },
-   { id: "florida", name: "Đồng Nai", minPrice: "$160" },
+   { id: "3", name: "Quảng Nam", minPrice: "$160" },
+   { id: "4", name: "Hà Tĩnh", minPrice: "$160" },
+   { id: "5", name: "Quảng Ninh", minPrice: "$160" },
+   { id: "6", name: "Hưng Yên", minPrice: "$160" },
+   { id: "7", name: "Hồ Chí Minh", minPrice: "$160" },
+   { id: "8", name: "Đồng Nai", minPrice: "$160" },
 ];
 
 function LocationDialog({ onClose }) {
