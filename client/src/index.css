@@ -12,3 +12,21 @@
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
 }
+
+@layer components {
+}
+
+@layer base {
+   input[type="text"]:focus {
+      @apply outline-none;
+   }
+   svg {
+      @apply h-auto;
+   }
+}
+
+@layer utilities {
+   .flex-center {
+      @apply flex items-center justify-center;
+   }
+}
