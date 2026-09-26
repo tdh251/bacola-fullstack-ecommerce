@@ -8,98 +8,10 @@ import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
-// Chỉ import CSS cốt lõi của Swiper, không import "swiper/css/navigation"
 import "swiper/css";
 
-import ProductItem from "../../../components/ProductItem";
-import ProductImgDemo from "../../../assets/images/product-image-demo.jpg";
-
-const BEST_SELLER_PRODUCTS = [
-   {
-      id: 1,
-      title: "All Natural Italian-Style Chicken Meatballs",
-      image: ProductImgDemo,
-      discount: 23,
-      recommended: true,
-      organic: false,
-      inStock: true,
-      rating: 4,
-      ratingCount: 1,
-      oldPrice: 230000,
-      price: 180000,
-      buttonType: "add",
-   },
-   {
-      id: 2,
-      title: "Angie's Boomchickapop Sweet & Salty Kettle Corn",
-      image: ProductImgDemo,
-      discount: null,
-      recommended: false,
-      organic: false,
-      inStock: true,
-      rating: 4,
-      ratingCount: 1,
-      oldPrice: null,
-      price: 195000,
-      buttonType: "select",
-   },
-   {
-      id: 3,
-      title: "Field Roast Chao Cheese Creamy Original",
-      image: ProductImgDemo,
-      discount: 19,
-      recommended: false,
-      organic: true,
-      inStock: false,
-      rating: 5,
-      ratingCount: 1,
-      oldPrice: 590000,
-      price: 480000,
-      buttonType: "read",
-   },
-   {
-      id: 4,
-      title: "Blue Diamond Almonds Lightly Salted",
-      image: ProductImgDemo,
-      discount: 10,
-      recommended: false,
-      organic: true,
-      inStock: true,
-      rating: 5,
-      ratingCount: 1,
-      oldPrice: 285000,
-      price: 260000,
-      buttonType: "add",
-   },
-   {
-      id: 5,
-      title: "All Natural Italian-Style Chicken Meatballs",
-      image: ProductImgDemo,
-      discount: 23,
-      recommended: true,
-      organic: false,
-      inStock: true,
-      rating: 4,
-      ratingCount: 1,
-      oldPrice: 230000,
-      price: 180000,
-      buttonType: "add",
-   },
-   {
-      id: 6,
-      title: "Angie's Boomchickapop Sweet & Salty Kettle Corn",
-      image: ProductImgDemo,
-      discount: null,
-      recommended: false,
-      organic: false,
-      inStock: true,
-      rating: 4,
-      ratingCount: 1,
-      oldPrice: null,
-      price: 195000,
-      buttonType: "select",
-   },
-];
+import Product from "../../../components/Product";
+import { PRODUCTS_DEMO } from "../../../data";
 
 function BestSellers() {
    const swiperRef = useRef(null);
@@ -165,12 +77,12 @@ function BestSellers() {
                }}
                className="w-ful overflow-hidden border border-[#edeeef] rounded-[10px] bg-white"
             >
-               {BEST_SELLER_PRODUCTS.map((product) => (
+               {PRODUCTS_DEMO.map((product) => (
                   <SwiperSlide
                      key={product.id}
                      className="h-auto border-r border-[#edeeef]"
                   >
-                     <ProductItem product={product} />
+                     <Product product={product} />
                   </SwiperSlide>
                ))}
             </Swiper>

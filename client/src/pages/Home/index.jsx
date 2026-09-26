@@ -3,7 +3,7 @@ import BestSellers from "./BestSellers";
 import NewProducts from "./NewProducts";
 import Slider from "./Slider";
 import PromoBanners from "./PromoBanners";
-import Blog from "./Blog";
+import LatestNews from "./LatestNews";
 
 function Home() {
    return (
@@ -13,7 +13,7 @@ function Home() {
          <SafetyBanner />
          <NewProducts />
          <PromoBanners />
-         <Blog />
+         <LatestNews />
       </>
    );
 }

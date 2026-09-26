@@ -1,12 +1,9 @@
 import { Link } from "react-router-dom";
-import Button from "../common/Button";
-import {
-   ArrowsPointingOutIcon,
-   HeartIcon,
-   StarIcon,
-} from "@heroicons/react/24/outline";
+import Button from "./common/Button";
+import { ArrowsPointingOutIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/solid";
 
-function ProductItem({ product }) {
+function Product({ product }) {
    const {
       id,
       title,
@@ -19,13 +16,19 @@ function ProductItem({ product }) {
       ratingCount = 1,
       oldPrice,
       price,
-      buttonType = "add", // "add" | "select" | "read"
+      slug,
+      className,
    } = product;
 
    const renderButton = () => {
-      const baseBtnClass =
-         "w-full h-[38px] rounded-full border border-[#2bbef9] text-[#2bbef9] font-medium text-[13px] hover:bg-[#2bbef9] hover:text-white transition-colors duration-200 flex items-center justify-center";
+      let baseBtnClass =
+         "w-full h-[38px] rounded-full border border-[#2bbef9] text-[#2bbef9] font-medium text-[13px] transition-colors duration-200 flex items-center justify-center";
       if (!inStock) {
+         baseBtnClass +=
+            " bg-[#f3f4f7] border border-[#e2e4ec] text-[#b0b3be] cursor-not-allowed";
+      } else {
+         baseBtnClass +=
+            " border border-[#2bbef9] text-[#2bbef9] hover:bg-[#2bbef9] hover:text-white cursor-pointer";
       }
       return (
          <button type="button" className={baseBtnClass}>
@@ -35,7 +38,10 @@ function ProductItem({ product }) {
    };
 
    return (
-      <div className="relative group p-4 border-r border-[#edeeef] last:border-r-0 flex flex-col justify-between h-full bg-white transition-shadow hover:shadow-sm">
+      <div
+         className="relative group px-[30px] py-6 border-r border-[#edeeef] last:border-r-0 flex flex-col justify-between h-full bg-white transition-shadow hover:shadow-sm"
+         data-product_id={id}
+      >
          {/* Badges top-left */}
          <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5 items-start pointer-events-none">
             {discount && (
@@ -84,7 +90,7 @@ function ProductItem({ product }) {
          {/* Product Info */}
          <div className="flex flex-col flex-grow">
             <h6 className="font-semibold text-[#202435] leading-snug line-clamp-2 min-h-[40px] hover:text-[#2bbef9] transition-colors mb-2">
-               <Link to={`/product/${id}`}>{title}</Link>
+               <Link to={`/product/${slug}`}>{title}</Link>
             </h6>
 
             {/* Stock status */}
@@ -93,7 +99,7 @@ function ProductItem({ product }) {
                   inStock ? "text-[#00b853]" : "text-[#d51243]"
                }`}
             >
-               {inStock ? "IN STOCK" : "OUT OF STOCK"}
+               {inStock ? "CÒN HÀNG" : "HẾT HÀNG"}
             </span>
 
             {/* Rating stars */}
@@ -134,4 +140,4 @@ function ProductItem({ product }) {
    );
 }
 
-export default ProductItem;
+export default Product;

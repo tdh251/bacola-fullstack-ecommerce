@@ -80,7 +80,7 @@ function BlogItem({ post }) {
    );
 }
 
-function Blog() {
+function LatestNews() {
    return (
       <section className="mt-[100px]">
          <div className="flex items-center justify-between mb-4">
@@ -111,4 +111,4 @@ function Blog() {
    );
 }
 
-export default Blog;
+export default LatestNews;
