@@ -13,15 +13,49 @@
    -moz-osx-font-smoothing: grayscale;
 }
 
-@layer components {
-}
-
 @layer base {
-   input[type="text"]:focus {
+   input[type="text"]:focus,
+   input[type="email"]:focus {
       @apply outline-none;
    }
    svg {
       @apply h-auto;
+   }
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   h6 {
+      @apply font-bold;
+   }
+   h2 {
+      @apply tracking-[-0.7px] text-[48px] leading-[1.2];
+   }
+   h3 {
+      @apply text-[34px] tracking-[-0.5px];
+   }
+   h4 {
+      @apply text-[26px];
+   }
+   h5 {
+      @apply text-[20px];
+   }
+   h6 {
+      @apply text-[18px];
+   }
+}
+
+@layer components {
+   .swiper-pagination-bullets {
+      @apply flex items-center absolute left-[60px] bottom-[60px] translate-y-1/2 z-10;
+   }
+   .swiper-pagination-bullet {
+      @apply relative w-[16px] h-[16px] rounded-full bg-transparent cursor-pointer flex-center transition-colors before:content-[''] before:absolute before:inset-[5px] before:bg-[#202435] before:rounded-full;
+   }
+   .swiper-pagination-bullet.swiper-pagination-bullet-active,
+   .swiper-pagination-bullet:hover {
+      @apply bg-[rgba(32,36,53,0.15)];
    }
 }
 

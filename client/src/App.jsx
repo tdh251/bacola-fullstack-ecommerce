@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Header from "./components/Header";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import BodyOverlay from "./components/common/BodyOverlay";
 import UIContextProvider from "./context/UIContext";
 function App() {
@@ -16,6 +17,7 @@ function App() {
                   </Routes>
                </div>
             </main>
+            <Footer />
          </BrowserRouter>
       </UIContextProvider>
    );
