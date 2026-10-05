@@ -78,6 +78,10 @@ public class Product extends BaseEntity {
    @Builder.Default
    private List<Product> variants = new ArrayList<>();
 
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "brand_id", referencedColumnName = "id")
+   private Brand brand;
+
    public boolean isInStock() {
       return stockQuantity != null && stockQuantity > 0;
    }

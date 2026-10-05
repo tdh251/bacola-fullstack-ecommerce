@@ -2,7 +2,7 @@
 -- ENUM TYPES
 -- =============================================================================
 CREATE TYPE user_role AS ENUM ('CUSTOMER', 'ADMIN', 'STAFF');
-CREATE TYPE entity_status AS ENUM ('DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED');
+CREATE TYPE entity_status AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
 CREATE TYPE order_status AS ENUM ('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 CREATE TYPE payment_method AS ENUM ('COD', 'VNPAY', 'MOMO', 'BANK_TRANSFER');
 CREATE TYPE payment_status AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED');
@@ -18,7 +18,7 @@ CREATE TABLE users (
    full_name VARCHAR(100) NOT NULL,
    avatar_url TEXT,
    role user_role NOT NULL DEFAULT 'CUSTOMER',
-   status entity_status NOT NULL DEFAULT 'ACTIVE',
+   is_verified BOOLEAN NOT NULL DEFAULT FALSE,
    password VARCHAR(255) NOT NULL,
 
    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -98,6 +98,23 @@ CREATE TABLE addresses (
 );
 
 -- =============================================================================
+-- Table BRANDS
+-- =============================================================================
+CREATE TABLE brands (
+   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+   name VARCHAR(255) NOT NULL,
+   slug VARCHAR(255) NOT NULL UNIQUE,
+   logo_url TEXT,
+   description VARCHAR(255),
+   status entity_status NOT NULL DEFAULT 'DRAFT',
+
+   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   updated_at TIMESTAMP WITH TIME ZONE,
+   deleted_at TIMESTAMP WITH TIME ZONE
+);
+
+-- =============================================================================
 -- Table CATEGORIES
 -- =============================================================================
 CREATE TABLE categories (
@@ -145,6 +162,7 @@ CREATE TABLE products (
 
    sku VARCHAR(100),
    name VARCHAR(255) NOT NULL,
+   brand_id BIGINT,
    slug VARCHAR(255) NOT NULL,
    short_description VARCHAR(500),
    description TEXT,
@@ -160,7 +178,8 @@ CREATE TABLE products (
    updated_at TIMESTAMP WITH TIME ZONE,
    deleted_at TIMESTAMP WITH TIME ZONE,
 
-   CONSTRAINT fk_products_parent FOREIGN KEY (parent_id) REFERENCES products (id) ON DELETE RESTRICT
+   CONSTRAINT fk_products_parent FOREIGN KEY (parent_id) REFERENCES products (id) ON DELETE RESTRICT,
+   CONSTRAINT fk_brand_parent FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE RESTRICT
 );
 
 -- =============================================================================

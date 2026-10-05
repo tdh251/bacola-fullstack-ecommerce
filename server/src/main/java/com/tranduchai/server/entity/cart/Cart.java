@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tranduchai.server.common.entity.BaseEntity;
-import com.tranduchai.server.entity.user.User;
+import com.tranduchai.server.entity.auth.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
