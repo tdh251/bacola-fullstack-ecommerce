@@ -1,5 +1,7 @@
 package com.tranduchai.server.common.controller;
 
-public class BaseController {
-
+public abstract class BaseController {
+   protected <T> ApiResponse<T> createSuccessResponse(T data) {
+      return ApiResponse.success(data);
+   }
 }

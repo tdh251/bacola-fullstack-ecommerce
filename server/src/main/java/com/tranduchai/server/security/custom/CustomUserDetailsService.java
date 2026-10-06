@@ -1,41 +1,30 @@
 package com.tranduchai.server.security.custom;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.User;
 
 import com.tranduchai.server.repository.auth.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-// @Service
-// @RequiredArgsConstructor
+@Service
 @Configuration
-public class CustomUserDetailsService {
+@RequiredArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
 
-   @Bean
-   public UserDetailsService userDetailsService() {
-      UserDetails userDetails = User.builder()
-            .username("admin")
-            .password("$2y$10$mU3imh/gPAqzm5B2fkftteQKpWEidAFnt3IEl3T0ZKsjVROMjt2py")
-            .roles("ADMIN")
-            .build();
-      return new InMemoryUserDetailsManager(userDetails);
+   private final UserRepository userRepository;
+
+   @Override
+   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+      // DaoAuthenticationProvider gọi method này với email từ LoginRequest.
+      // User implements UserDetails, cung cấp hash mật khẩu, quyền và trạng thái tài
+      // khoản.
+      // Service chỉ tìm tài khoản; việc so sánh mật khẩu do provider thực hiện.
+      return userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Email " + email + " not found!"));
    }
-
-   // private final UserRepository userRepository;
-
-   // @Override
-   // public UserDetails loadUserByUsername(String email) throws
-   // UsernameNotFoundException {
-   // return userRepository.findByEmail(email)
-   // .orElseThrow(() -> new UsernameNotFoundException("Email " + email + " not
-   // found!"));
-   // }
 
 }

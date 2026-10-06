@@ -1,7 +1,7 @@
 -- =============================================================================
 -- ENUM TYPES
 -- =============================================================================
-CREATE TYPE user_role AS ENUM ('CUSTOMER', 'ADMIN', 'STAFF');
+CREATE TYPE user_role AS ENUM ('ROLE_USER', 'ROLE_ADMIN', 'ROLE_STAFF');
 CREATE TYPE entity_status AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
 CREATE TYPE order_status AS ENUM ('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 CREATE TYPE payment_method AS ENUM ('COD', 'VNPAY', 'MOMO', 'BANK_TRANSFER');
@@ -17,7 +17,7 @@ CREATE TABLE users (
    phone VARCHAR(20),
    full_name VARCHAR(100) NOT NULL,
    avatar_url TEXT,
-   role user_role NOT NULL DEFAULT 'CUSTOMER',
+   role user_role NOT NULL DEFAULT 'ROLE_USER',
    is_verified BOOLEAN NOT NULL DEFAULT FALSE,
    password VARCHAR(255) NOT NULL,
 
@@ -323,8 +323,26 @@ CREATE TABLE order_items (
 );
 
 -- =============================================================================
+-- Table REFRESH_TOKENS
+-- =============================================================================
+CREATE TABLE refresh_tokens (
+   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+   user_id BIGINT NOT NULL,
+   token VARCHAR(512) NOT NULL UNIQUE,
+   expiry_date TIMESTAMPTZ NOT NULL,
+   revoked BOOLEAN NOT NULL DEFAULT FALSE,
+   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   updated_at TIMESTAMP WITH TIME ZONE,
+   deleted_at TIMESTAMP WITH TIME ZONE,
+
+   CONSTRAINT fk_refresh_token_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+
+-- =============================================================================
 -- INDEXES & SOFT-DELETE SAFE UNIQUE INDEXES
 -- =============================================================================
+CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens (user_id);
 CREATE UNIQUE INDEX uq_categories_active_slug ON categories (slug) WHERE deleted_at IS NULL;
 CREATE UNIQUE INDEX uq_products_active_sku ON products (sku) WHERE deleted_at IS NULL;
 CREATE UNIQUE INDEX uq_products_active_slug ON products (slug) WHERE deleted_at IS NULL;
@@ -349,3 +367,13 @@ CREATE INDEX idx_orders_status ON orders (status);
 CREATE INDEX idx_orders_created_at ON orders (created_at DESC);
 CREATE INDEX idx_order_items_order_id ON order_items (order_id);
 CREATE INDEX idx_order_items_product_id ON order_items (product_id);
+
+-- INSERT TABLEs
+INSERT INTO users (email, phone, full_name, avatar_url, role, is_verified, password)
+VALUES ('admin@gmail.com', 0123456789, 'Admin Đỗ', '', 'ROLE_ADMIN', true, '$2b$10$V9HAi35VDosQU8/gIOFFDeFMASDnmGeMcbr4EB8MdmYwdZ90aGy/G');
+
+INSERT INTO users (email, phone, full_name, avatar_url, role, is_verified, password)
+VALUES ('user@gmail.com', 0123456786, 'Trần Đỗ Quốc', '', 'ROLE_USER', true, '$2b$10$V9HAi35VDosQU8/gIOFFDeFMASDnmGeMcbr4EB8MdmYwdZ90aGy/G');
+
+INSERT INTO users (email, phone, full_name, avatar_url, role, is_verified, password)
+VALUES ('user2@gmail.com', 0123456784, 'Đỗ Quốc Toàn', '', 'ROLE_USER', true, '$2b$10$V9HAi35VDosQU8/gIOFFDeFMASDnmGeMcbr4EB8MdmYwdZ90aGy/G');

@@ -27,6 +27,7 @@ public class JwtService {
 
    // Create token
    public String generateToken(UserDetails userDetails) {
+      // User.getUsername() trả email; email được lưu vào claim subject của JWT.
       Map<String, Object> claims = new HashMap<>();
       return createToken(claims, userDetails.getUsername());
    }
@@ -36,7 +37,7 @@ public class JwtService {
             .setClaims(claims)
             .setSubject(subject)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+            .setExpiration(new Date(System.currentTimeMillis() + 50000))
             .signWith(getSignKey(), SignatureAlgorithm.HS256)
             .compact();
    }
@@ -67,7 +68,9 @@ public class JwtService {
    // Check token expire
    public Boolean validateToken(String token, UserDetails userDetails) {
       final String username = extractUsername(token);
-      return (username.equals(userDetails.getUsername()) && isTokenExpired(token));
+      // JWT chỉ hợp lệ khi subject khớp tài khoản và token chưa hết hạn.
+      // extractAllClaims() đã kiểm tra chữ ký khi parse token.
+      return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
    }
 
    private Boolean isTokenExpired(String token) {

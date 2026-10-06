@@ -3,12 +3,9 @@ package com.tranduchai.server.controller.auth;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tranduchai.server.security.jwt.JwtService;
-
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
@@ -16,14 +13,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class UserController {
 
-   private final JwtService jwtService;
-
-   private final UserDetailsService userDetailsService;
-
+   @PreAuthorize("hasRole('ADMIN')")
    @GetMapping("/test")
    public String getMethodName() {
-      UserDetails user = userDetailsService.loadUserByUsername("admin");
-      return jwtService.generateToken(user);
+      return "Only Admin";
+   }
+
+   @PreAuthorize("hasRole('USER')")
+   @GetMapping("/test2")
+   public String getMethodName2() {
+      return "Only User";
+   }
+
+   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+   @GetMapping("/test3")
+   public String getMethodName3() {
+      return "Admin User";
    }
 
 }

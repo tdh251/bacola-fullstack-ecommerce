@@ -1,7 +1,7 @@
 package com.tranduchai.server.enumeration;
 
 public enum UserRole {
-   ADMIN,
-   CUSTOMER,
-   STAFF,
+   ROLE_ADMIN,
+   ROLE_USER,
+   ROLE_STAFF,
 }

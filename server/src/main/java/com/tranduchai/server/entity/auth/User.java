@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.tranduchai.server.common.entity.BaseEntity;
@@ -52,7 +53,7 @@ public class User extends BaseEntity implements UserDetails {
    @Enumerated(EnumType.STRING)
    @Column(nullable = false)
    @Builder.Default
-   private UserRole role = UserRole.CUSTOMER;
+   private UserRole role = UserRole.ROLE_USER;
 
    @Column(name = "is_verified", nullable = false)
    @Builder.Default
@@ -70,7 +71,7 @@ public class User extends BaseEntity implements UserDetails {
 
    @Override
    public Collection<? extends GrantedAuthority> getAuthorities() {
-      return null;
+      return List.of(new SimpleGrantedAuthority(role.name()));
    }
 
    @Override
