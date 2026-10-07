@@ -1,4 +1,4 @@
-package com.tranduchai.server.dto.request;
+package com.tranduchai.server.dto.request.auth;
 
 public record LoginRequest(
       String email,

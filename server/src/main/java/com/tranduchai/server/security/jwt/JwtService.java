@@ -23,7 +23,7 @@ public class JwtService {
    private String secret;
 
    @Value("${jwt.expiration}")
-   private String expiration;
+   private int expiration;
 
    // Create token
    public String generateToken(UserDetails userDetails) {
@@ -37,7 +37,7 @@ public class JwtService {
             .setClaims(claims)
             .setSubject(subject)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 50000))
+            .setExpiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(getSignKey(), SignatureAlgorithm.HS256)
             .compact();
    }

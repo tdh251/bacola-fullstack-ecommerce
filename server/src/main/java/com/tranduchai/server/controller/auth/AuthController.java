@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tranduchai.server.common.controller.BaseController;
 import com.tranduchai.server.common.response.ApiResponse;
-import com.tranduchai.server.dto.request.LoginRequest;
-import com.tranduchai.server.dto.request.RegisterRequest;
+import com.tranduchai.server.dto.request.auth.LoginRequest;
+import com.tranduchai.server.dto.request.auth.RegisterRequest;
 import com.tranduchai.server.entity.user.RefreshToken;
 import com.tranduchai.server.entity.user.User;
 import com.tranduchai.server.enumeration.ResponseCode;
@@ -47,7 +47,7 @@ public class AuthController extends BaseController {
    public ResponseEntity<ApiResponse<?>> register(@Valid @RequestBody RegisterRequest request) {
       userService.register(request);
       return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ApiResponse.success(ResponseCode.SUCCESS, "Created Account Success", null));
+            .body(createSuccessResponse(ResponseCode.SUCCESS, "Created Account Success", null));
    }
 
    @PostMapping("/login")
@@ -72,7 +72,7 @@ public class AuthController extends BaseController {
 
       RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(ResponseCode.SUCCESS, "Login successed",
+      return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse(ResponseCode.SUCCESS, "Login successed",
             Map.of("accessToken", accessToken, "refreshToken", refreshToken).toString()));
    }
 
@@ -96,7 +96,8 @@ public class AuthController extends BaseController {
       String newAccessToken = jwtService.generateToken(user);
 
       return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.success(ResponseCode.SUCCESS, "Refresh Token Success", Map.of("accessToken:", newAccessToken)));
+            createSuccessResponse(ResponseCode.SUCCESS, "Refresh Token Success",
+                  Map.of("accessToken:", newAccessToken)));
    }
 
    @PostMapping("/logout")
@@ -106,7 +107,7 @@ public class AuthController extends BaseController {
       User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
       refreshTokenService.revokeAllUserToken(user.getId());
       return ResponseEntity.status(HttpStatus.OK).body(
-            ApiResponse.success(ResponseCode.SUCCESS, "Logout Successed", null));
+            createSuccessResponse(ResponseCode.SUCCESS, "Logout Successed", null));
    }
 
 }

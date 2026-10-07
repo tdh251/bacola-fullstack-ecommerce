@@ -1,4 +1,4 @@
-package com.tranduchai.server.dto.request;
+package com.tranduchai.server.dto.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

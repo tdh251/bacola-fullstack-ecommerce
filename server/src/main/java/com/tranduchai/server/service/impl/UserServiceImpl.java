@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.tranduchai.server.common.exception.ResourceAlreadyExistsException;
-import com.tranduchai.server.dto.request.RegisterRequest;
+import com.tranduchai.server.dto.request.auth.RegisterRequest;
 import com.tranduchai.server.entity.user.User;
 import com.tranduchai.server.enumeration.UserRole;
 import com.tranduchai.server.repository.auth.UserRepository;
@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
             .isVerified(false)
             .role(UserRole.ROLE_USER)
             .password(hashPassword(request.password()))
-            .createdAt(LocalDateTime.now())
             .build();
       userRepository.save(user);
    }

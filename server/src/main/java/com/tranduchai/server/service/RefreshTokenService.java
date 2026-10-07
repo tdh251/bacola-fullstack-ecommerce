@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.tranduchai.server.entity.user.RefreshToken;
@@ -18,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-   private Integer refresTokenExpirationMs = 5000000;
+
+   @Value("${jwt.expiration}")
+   private int refresTokenExpirationMs;
 
    private final RefreshTokenRepository refreshTokenRepository;
 
@@ -33,7 +36,6 @@ public class RefreshTokenService {
             .token(UUID.randomUUID().toString())
             .expiryDate(Instant.now().plusMillis(refresTokenExpirationMs))
             .revoked(false)
-            .createdAt(LocalDateTime.now())
             .build();
       return refreshTokenRepository.save(refreshToken);
    }

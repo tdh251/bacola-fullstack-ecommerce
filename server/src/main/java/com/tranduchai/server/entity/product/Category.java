@@ -3,6 +3,10 @@ package com.tranduchai.server.entity.product;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
+
 import com.tranduchai.server.common.entity.BaseEntity;
 import com.tranduchai.server.enumeration.PostStatus;
 
@@ -48,6 +52,7 @@ public class Category extends BaseEntity {
    private Integer sortOrder;
 
    @Enumerated(EnumType.STRING)
+   @JdbcType(PostgreSQLEnumJdbcType.class)
    @Builder.Default
    private PostStatus status = PostStatus.DRAFT;
 

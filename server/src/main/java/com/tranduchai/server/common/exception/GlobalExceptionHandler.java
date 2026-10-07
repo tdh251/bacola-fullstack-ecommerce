@@ -23,8 +23,14 @@ public class GlobalExceptionHandler {
       return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
    }
 
+   @ExceptionHandler(ResourceNotFoundException.class)
+   public ResponseEntity<ApiResponse<Void>> resourceNotFoundExceptionHandler(ResourceNotFoundException ex) {
+      ApiResponse<Void> apiResponse = ApiResponse.error(ResponseCode.RESOURCE_NOT_FOUND, ex.getMessage(), null);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+   }
+
    @ExceptionHandler(MethodArgumentNotValidException.class)
-   public ResponseEntity<ApiResponse<Void>> methodArgumentValidException(MethodArgumentNotValidException ex) {
+   public ResponseEntity<ApiResponse<Void>> methodArgumentValidExceptionHandler(MethodArgumentNotValidException ex) {
       List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
       Map<String, List<String>> errors = fieldErrors.stream()
             .collect(Collectors.groupingBy(

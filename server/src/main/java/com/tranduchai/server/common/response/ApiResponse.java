@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tranduchai.server.enumeration.ResponseCode;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ApiResponse<T>(
       boolean success,
       ResponseCode code,

@@ -1,6 +1,6 @@
 package com.tranduchai.server.service;
 
-import com.tranduchai.server.dto.request.RegisterRequest;
+import com.tranduchai.server.dto.request.auth.RegisterRequest;
 
 public interface UserService {
 
