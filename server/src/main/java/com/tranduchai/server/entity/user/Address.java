@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import com.tranduchai.server.common.entity.BaseEntity;
 import com.tranduchai.server.entity.address.Province;
 import com.tranduchai.server.entity.address.Ward;
-import com.tranduchai.server.entity.auth.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

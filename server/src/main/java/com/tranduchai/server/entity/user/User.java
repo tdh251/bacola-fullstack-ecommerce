@@ -1,16 +1,17 @@
-package com.tranduchai.server.entity.auth;
+package com.tranduchai.server.entity.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.tranduchai.server.common.entity.BaseEntity;
 import com.tranduchai.server.entity.cart.Cart;
-import com.tranduchai.server.entity.user.Address;
 import com.tranduchai.server.enumeration.UserRole;
 
 import jakarta.persistence.CascadeType;
@@ -51,6 +52,7 @@ public class User extends BaseEntity implements UserDetails {
    private String avatarUrl;
 
    @Enumerated(EnumType.STRING)
+   @JdbcType(PostgreSQLEnumJdbcType.class)
    @Column(nullable = false)
    @Builder.Default
    private UserRole role = UserRole.ROLE_USER;

@@ -1,4 +1,4 @@
-package com.tranduchai.server.entity.auth;
+package com.tranduchai.server.entity.user;
 
 import java.time.Instant;
 

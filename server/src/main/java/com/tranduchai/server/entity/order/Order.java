@@ -8,7 +8,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.tranduchai.server.common.entity.BaseEntity;
-import com.tranduchai.server.entity.auth.User;
+import com.tranduchai.server.entity.user.User;
 import com.tranduchai.server.enumeration.OrderStatus;
 import com.tranduchai.server.enumeration.PaymentMethod;
 import com.tranduchai.server.enumeration.PaymentStatus;

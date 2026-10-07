@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.tranduchai.server.entity.auth.RefreshToken;
-import com.tranduchai.server.entity.auth.User;
+import com.tranduchai.server.entity.user.RefreshToken;
+import com.tranduchai.server.entity.user.User;
 import com.tranduchai.server.repository.auth.RefreshTokenRepository;
 import com.tranduchai.server.repository.auth.UserRepository;
 

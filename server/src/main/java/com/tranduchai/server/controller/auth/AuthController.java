@@ -12,15 +12,19 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tranduchai.server.common.controller.ApiResponse;
 import com.tranduchai.server.common.controller.BaseController;
+import com.tranduchai.server.common.response.ApiResponse;
 import com.tranduchai.server.dto.request.LoginRequest;
-import com.tranduchai.server.entity.auth.RefreshToken;
-import com.tranduchai.server.entity.auth.User;
+import com.tranduchai.server.dto.request.RegisterRequest;
+import com.tranduchai.server.entity.user.RefreshToken;
+import com.tranduchai.server.entity.user.User;
+import com.tranduchai.server.enumeration.ResponseCode;
 import com.tranduchai.server.repository.auth.UserRepository;
 import com.tranduchai.server.security.jwt.JwtService;
 import com.tranduchai.server.service.RefreshTokenService;
+import com.tranduchai.server.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -37,9 +41,18 @@ public class AuthController extends BaseController {
 
    private final UserRepository userRepository;
 
+   private final UserService userService;
+
+   @PostMapping("/register")
+   public ResponseEntity<ApiResponse<?>> register(@Valid @RequestBody RegisterRequest request) {
+      userService.register(request);
+      return ResponseEntity.status(HttpStatus.CREATED)
+            .body(ApiResponse.success(ResponseCode.SUCCESS, "Created Account Success", null));
+   }
+
    @PostMapping("/login")
-   public ApiResponse<ResponseEntity<?>> login(@RequestBody LoginRequest loginRequest) {
-      // 1. Spring đọc JSON body thành LoginRequest. Email đóng vai trò username.
+   public ResponseEntity<ApiResponse<?>> login(@RequestBody LoginRequest request) {
+      // 1. Spring đọc JSON body thành request. Email đóng vai trò username.
       // Token này chứa email và mật khẩu gốc, chưa được xác thực.
       // 2. AuthenticationManager chuyển token cho DaoAuthenticationProvider:
       // gọi loadUserByUsername(email), kiểm tra trạng thái tài khoản và dùng
@@ -47,24 +60,24 @@ public class AuthController extends BaseController {
       // Nếu thông tin không hợp lệ, authenticate() ném exception và không tạo JWT.
       Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                  loginRequest.getEmail(),
-                  loginRequest.getPassword()));
+                  request.email(),
+                  request.password()));
       // 3. Xác thực thành công: principal là UserDetails của tài khoản trong
       // database.
       // Không kiểm tra mật khẩu lần nữa: manager thường đã xóa credentials.
       User user = (User) authentication.getPrincipal();
       // 4. Tạo JWT có subject là email, rồi trả accessToken cho client.
-      // Client gửi Authorization: Bearer <accessToken> trong các request tiếp theo.
+      // Client gửi Authorization: Bearer <accessToken> trong các request tiếp
       String accessToken = jwtService.generateToken(user);
 
       RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
-      return ApiResponse
-            .success(ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken).toString()));
+      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(ResponseCode.SUCCESS, "Login successed",
+            Map.of("accessToken", accessToken, "refreshToken", refreshToken).toString()));
    }
 
    @PostMapping("/refresh-token")
-   public ApiResponse<ResponseEntity<?>> refreshToken(@RequestBody Map<String, String> request) {
+   public ResponseEntity<ApiResponse<?>> refreshToken(@RequestBody Map<String, String> request) {
       String refreshTokenStr = request.get("refreshToken");
 
       if (refreshTokenStr == null) {
@@ -82,17 +95,18 @@ public class AuthController extends BaseController {
       User user = verifiedToken.getUser();
       String newAccessToken = jwtService.generateToken(user);
 
-      return ApiResponse.success(new ResponseEntity<>(
-            Map.of("accessToken:", newAccessToken), HttpStatus.OK));
+      return ResponseEntity.status(HttpStatus.OK).body(
+            ApiResponse.success(ResponseCode.SUCCESS, "Refresh Token Success", Map.of("accessToken:", newAccessToken)));
    }
 
    @PostMapping("/logout")
-   public ApiResponse<ResponseEntity<?>> logout(@RequestHeader("Authorization") String authorization) {
+   public ResponseEntity<ApiResponse<?>> logout(@RequestHeader("Authorization") String authorization) {
       String token = authorization.substring(7);
       String email = jwtService.extractUsername(token);
       User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
       refreshTokenService.revokeAllUserToken(user.getId());
-      return ApiResponse.success(new ResponseEntity<>(Map.of("message", "Logout successfully!"), HttpStatus.OK));
+      return ResponseEntity.status(HttpStatus.OK).body(
+            ApiResponse.success(ResponseCode.SUCCESS, "Logout Successed", null));
    }
 
 }
