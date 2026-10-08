@@ -17,15 +17,27 @@ import com.tranduchai.server.enumeration.ResponseCode;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-   @ExceptionHandler(ResourceAlreadyExistsException.class)
-   public ResponseEntity<ApiResponse<Void>> resourceAlreadyExistsExceptionHandler(ResourceAlreadyExistsException ex) {
+   @ExceptionHandler(AlreadyExistsException.class)
+   public ResponseEntity<ApiResponse<Void>> alreadyExistsExceptionHandler(AlreadyExistsException ex) {
       ApiResponse<Void> apiResponse = ApiResponse.error(ResponseCode.RESOURCE_ALREADY_EXISTS, ex.getMessage(), null);
       return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
    }
 
-   @ExceptionHandler(ResourceNotFoundException.class)
-   public ResponseEntity<ApiResponse<Void>> resourceNotFoundExceptionHandler(ResourceNotFoundException ex) {
+   @ExceptionHandler(NotFoundException.class)
+   public ResponseEntity<ApiResponse<Void>> notFoundExceptionHandler(NotFoundException ex) {
       ApiResponse<Void> apiResponse = ApiResponse.error(ResponseCode.RESOURCE_NOT_FOUND, ex.getMessage(), null);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+   }
+
+   @ExceptionHandler(InvalidOperationException.class)
+   public ResponseEntity<ApiResponse<Void>> invalidOperationExceptionHandler(InvalidOperationException ex) {
+      ApiResponse<Void> apiResponse = ApiResponse.error(ResponseCode.VALIDATION_ERROR, ex.getMessage(), null);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+   }
+
+   @ExceptionHandler(EmptyException.class)
+   public ResponseEntity<ApiResponse<Void>> emptyExceptionHandler(EmptyException ex) {
+      ApiResponse<Void> apiResponse = ApiResponse.error(ResponseCode.EMPTY, ex.getMessage(), null);
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
    }
 

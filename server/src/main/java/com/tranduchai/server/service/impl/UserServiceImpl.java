@@ -1,11 +1,9 @@
 package com.tranduchai.server.service.impl;
 
-import java.time.LocalDateTime;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.tranduchai.server.common.exception.ResourceAlreadyExistsException;
+import com.tranduchai.server.common.exception.AlreadyExistsException;
 import com.tranduchai.server.dto.request.auth.RegisterRequest;
 import com.tranduchai.server.entity.user.User;
 import com.tranduchai.server.enumeration.UserRole;
@@ -24,10 +22,10 @@ public class UserServiceImpl implements UserService {
    @Override
    public void register(RegisterRequest request) {
       if (userRepository.existsByEmail(request.email())) {
-         throw new ResourceAlreadyExistsException("Email này đã được đăng ký");
+         throw new AlreadyExistsException("Email này đã được đăng ký");
       }
       if (userRepository.existsByPhone(request.phone())) {
-         throw new ResourceAlreadyExistsException("Số điện thoại này đã được đăng ký");
+         throw new AlreadyExistsException("Số điện thoại này đã được đăng ký");
       }
       User user = User.builder()
             .email(request.email())

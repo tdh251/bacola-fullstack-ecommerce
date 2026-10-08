@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 
 import com.tranduchai.server.common.entity.BaseEntity;
@@ -63,5 +62,12 @@ public class Category extends BaseEntity {
    @OneToMany(mappedBy = "parent", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    @Builder.Default
    private List<Category> children = new ArrayList<>();
+
+   public boolean isChildren() {
+      if (parent.getId() == null) {
+         return false;
+      }
+      return true;
+   }
 
 }

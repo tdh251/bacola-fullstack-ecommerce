@@ -7,7 +7,6 @@ import com.tranduchai.server.common.controller.BaseController;
 import com.tranduchai.server.common.response.ApiResponse;
 import com.tranduchai.server.dto.request.product.CategoryRequest;
 import com.tranduchai.server.dto.response.product.CategoryResponse;
-import com.tranduchai.server.entity.product.Category;
 import com.tranduchai.server.enumeration.ResponseCode;
 import com.tranduchai.server.service.product.CategoryService;
 
@@ -26,19 +25,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping(value = "/api/v1/categories")
+@RequestMapping(value = "/api/v1/danh-muc")
 @RequiredArgsConstructor
 public class CategoryController extends BaseController {
-
-   // Kiểm tra parent_id kh được là chidld của chính nó
 
    private final CategoryService categoryService;
 
    @GetMapping
-   public ResponseEntity<ApiResponse<List<CategoryResponse>>> getCategoriesActive() {
+   public ResponseEntity<ApiResponse<List<CategoryResponse>>> index() {
       List<CategoryResponse> categories = categoryService.getActiveCategories();
       return ResponseEntity.status(HttpStatus.OK)
             .body(createSuccessResponse(ResponseCode.SUCCESS, "Danh sách danh mục", categories));
+   }
+
+   @GetMapping("/{slug}")
+   public ResponseEntity<ApiResponse<CategoryResponse>> get(@PathVariable("slug") String slug) {
+      CategoryResponse category = categoryService.getCategoryBySlug(slug);
+      return ResponseEntity.status(HttpStatus.OK)
+            .body(createSuccessResponse(ResponseCode.SUCCESS, "Lấy thông tin danh mục thành công", category));
    }
 
    @PostMapping
@@ -48,19 +52,26 @@ public class CategoryController extends BaseController {
             .body(createSuccessResponse(ResponseCode.SUCCESS, "Thêm danh mục thành công", category));
    }
 
-   @PatchMapping("/{id}")
-   public ResponseEntity<ApiResponse<?>> update(@PathVariable("id") Long id,
+   @PatchMapping("/{slug}")
+   public ResponseEntity<ApiResponse<?>> update(@PathVariable("slug") String slug,
          @Valid @RequestBody CategoryRequest request) {
-      CategoryResponse category = categoryService.update(id, request);
+      CategoryResponse category = categoryService.update(slug, request);
       return ResponseEntity.status(HttpStatus.OK)
             .body(createSuccessResponse(ResponseCode.SUCCESS, "Cập nhật danh mục thành công", category));
    }
 
-   @DeleteMapping("/{id}")
-   public ResponseEntity<ApiResponse<?>> delete(@PathVariable("id") Long id) {
-      CategoryResponse category = categoryService.softDelete(id);
+   @DeleteMapping("/{slug}")
+   public ResponseEntity<ApiResponse<?>> delete(@PathVariable("slug") String slug) {
+      CategoryResponse category = categoryService.softDelete(slug);
       return ResponseEntity.status(HttpStatus.OK)
-            .body(createSuccessResponse(ResponseCode.SUCCESS, "Xóa danh mục thành công", category));
+            .body(createSuccessResponse(ResponseCode.SUCCESS, "Danh mục đã chuyển vào thùng rác", category));
+   }
+
+   @DeleteMapping
+   public ResponseEntity<ApiResponse<?>> deleteAll() {
+      categoryService.softDeleteAllCategories();
+      return ResponseEntity.status(HttpStatus.OK)
+            .body(createSuccessResponse(ResponseCode.SUCCESS, "Tất cả danh mục đã chuyển vào thùng rác", null));
    }
 
 }

@@ -63,7 +63,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                   .requestMatchers("/api/v1/auth/**").permitAll()
                   .requestMatchers("/api/v1/admin/**").permitAll()
-                  .requestMatchers("/api/v1/categories/**").permitAll()
+                  .requestMatchers("/api/v1/danh-muc/**").permitAll()
+                  .requestMatchers("/api/v1/trash/**").permitAll()
                   .requestMatchers("/api/v1/public/**").permitAll()
                   .anyRequest()
                   .authenticated())
