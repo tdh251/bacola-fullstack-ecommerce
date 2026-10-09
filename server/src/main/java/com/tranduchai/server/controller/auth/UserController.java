@@ -19,16 +19,4 @@ public class UserController {
       return "Only Admin";
    }
 
-   @PreAuthorize("hasRole('USER')")
-   @GetMapping("/test2")
-   public String getMethodName2() {
-      return "Only User";
-   }
-
-   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-   @GetMapping("/test3")
-   public String getMethodName3() {
-      return "Admin User";
-   }
-
 }

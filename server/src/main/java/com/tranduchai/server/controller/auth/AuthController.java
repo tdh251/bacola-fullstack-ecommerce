@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tranduchai.server.common.controller.BaseController;
+import com.tranduchai.server.common.exception.InvalidOperationException;
+import com.tranduchai.server.common.exception.NotFoundException;
 import com.tranduchai.server.common.response.ApiResponse;
 import com.tranduchai.server.dto.request.auth.LoginRequest;
 import com.tranduchai.server.dto.request.auth.RegisterRequest;
@@ -47,7 +49,7 @@ public class AuthController extends BaseController {
    public ResponseEntity<ApiResponse<?>> register(@Valid @RequestBody RegisterRequest request) {
       userService.register(request);
       return ResponseEntity.status(HttpStatus.CREATED)
-            .body(createSuccessResponse(ResponseCode.SUCCESS, "Created Account Success", null));
+            .body(createSuccessResponse(ResponseCode.SUCCESS, "Tạo tài khoản thành công", null));
    }
 
    @PostMapping("/login")
@@ -70,10 +72,11 @@ public class AuthController extends BaseController {
       // Client gửi Authorization: Bearer <accessToken> trong các request tiếp
       String accessToken = jwtService.generateToken(user);
 
-      RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+      refreshTokenService.createRefreshToken(user.getId());
 
-      return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse(ResponseCode.SUCCESS, "Login successed",
-            Map.of("accessToken", accessToken, "refreshToken", refreshToken).toString()));
+      return ResponseEntity.status(HttpStatus.OK)
+            .body(createSuccessResponse(ResponseCode.SUCCESS, "Đăng nhập thành công",
+                  Map.of("accessToken", accessToken)));
    }
 
    @PostMapping("/refresh-token")
@@ -81,14 +84,14 @@ public class AuthController extends BaseController {
       String refreshTokenStr = request.get("refreshToken");
 
       if (refreshTokenStr == null) {
-         throw new RuntimeException("Refresh token notnull");
+         throw new InvalidOperationException("Token này không tồn tại");
       }
 
       RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenStr)
-            .orElseThrow(() -> new RuntimeException("Refresh don't exist"));
+            .orElseThrow(() -> new NotFoundException("Không tìm thấy token"));
 
       if (refreshToken.getRevoked()) {
-         throw new RuntimeException("Token da get han");
+         throw new RuntimeException("Token đã hết hạn, cần đăng nhập lại");
       }
 
       RefreshToken verifiedToken = refreshTokenService.vertifyExpiration(refreshToken);
@@ -96,7 +99,7 @@ public class AuthController extends BaseController {
       String newAccessToken = jwtService.generateToken(user);
 
       return ResponseEntity.status(HttpStatus.OK).body(
-            createSuccessResponse(ResponseCode.SUCCESS, "Refresh Token Success",
+            createSuccessResponse(ResponseCode.SUCCESS, "Đã tạo mới token",
                   Map.of("accessToken:", newAccessToken)));
    }
 
@@ -104,10 +107,11 @@ public class AuthController extends BaseController {
    public ResponseEntity<ApiResponse<?>> logout(@RequestHeader("Authorization") String authorization) {
       String token = authorization.substring(7);
       String email = jwtService.extractUsername(token);
-      User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user not found"));
+      User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng này"));
       refreshTokenService.revokeAllUserToken(user.getId());
       return ResponseEntity.status(HttpStatus.OK).body(
-            createSuccessResponse(ResponseCode.SUCCESS, "Logout Successed", null));
+            createSuccessResponse(ResponseCode.SUCCESS, "Đăng xuất thành công", null));
    }
 
 }

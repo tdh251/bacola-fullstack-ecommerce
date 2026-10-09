@@ -1,4 +1,4 @@
-package com.tranduchai.server.service.impl;
+package com.tranduchai.server.service.impl.product;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

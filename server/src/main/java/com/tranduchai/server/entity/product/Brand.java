@@ -1,5 +1,8 @@
 package com.tranduchai.server.entity.product;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
+
 import com.tranduchai.server.common.entity.BaseEntity;
 import com.tranduchai.server.enumeration.PostStatus;
 
@@ -38,6 +41,7 @@ public class Brand extends BaseEntity {
 
    @Enumerated(EnumType.STRING)
    @Builder.Default
+   @JdbcType(PostgreSQLEnumJdbcType.class)
    private PostStatus status = PostStatus.DRAFT;
 
 }

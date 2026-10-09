@@ -343,7 +343,10 @@ CREATE TABLE refresh_tokens (
 -- INDEXES & SOFT-DELETE SAFE UNIQUE INDEXES
 -- =============================================================================
 CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens (user_id);
+
 CREATE UNIQUE INDEX uq_categories_active_slug ON categories (slug) WHERE deleted_at IS NULL;
+
+CREATE UNIQUE INDEX uq_brands_active_slug ON brands (slug) WHERE deleted_at IS NULL;
 
 
 CREATE UNIQUE INDEX uq_products_active_sku ON products (sku) WHERE deleted_at IS NULL;
