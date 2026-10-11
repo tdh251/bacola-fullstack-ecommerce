@@ -15,6 +15,10 @@ public record ApiResponse<T>(
       T data,
       Map<String, List<String>> errors,
       LocalDateTime timestamp) {
+   public static <T> ApiResponse<T> success(ResponseCode code, String message) {
+      return new ApiResponse<T>(true, code, message, null, null, LocalDateTime.now());
+   }
+
    public static <T> ApiResponse<T> success(ResponseCode code, String message, T data) {
       return new ApiResponse<T>(true, code, message, data, null, LocalDateTime.now());
    }

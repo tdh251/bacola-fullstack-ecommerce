@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tranduchai.server.common.exception.AlreadyExistsException;
 import com.tranduchai.server.common.exception.EmptyException;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BrandServiceImpl implements BrandService {
 
    private final BrandRepository brandRepository;
@@ -26,9 +28,9 @@ public class BrandServiceImpl implements BrandService {
    public List<BrandResponse> getActiveBrands() {
       List<Brand> brands = brandRepository.findByDeletedAtIsNull();
       if (brands.isEmpty()) {
-         throw new EmptyException("Hiện tại chưa có brand nào");
+         throw new EmptyException("Hiện tại chưa có thương hiệu nào");
       }
-      return brands.stream().map(brand -> BrandResponse.fromEntity(brand)).toList();
+      return brands.stream().map(BrandResponse::fromEntity).toList();
    }
 
    @Override
@@ -39,6 +41,7 @@ public class BrandServiceImpl implements BrandService {
    }
 
    @Override
+   @Transactional
    public BrandResponse create(BrandRequest request) {
       if (brandRepository.existsBySlugAndDeletedAtIsNull(request.slug())) {
          throw new AlreadyExistsException("Slug của thương hiệu không được trùng nhau");
@@ -50,18 +53,18 @@ public class BrandServiceImpl implements BrandService {
             .description(request.description())
             .status(request.status())
             .build();
-      brandRepository.save(brand);
       Brand savedBrand = brandRepository.save(brand);
       return BrandResponse.fromEntity(savedBrand);
    }
 
    @Override
+   @Transactional
    public BrandResponse update(String slug, BrandRequest request) {
       Brand brand = brandRepository.findBySlugAndDeletedAtIsNull(slug)
-            .orElseThrow(() -> new NotFoundException("Danh mục không tồn tại"));
+            .orElseThrow(() -> new NotFoundException("Thương hiệu không tồn tại"));
 
       if (!brand.getSlug().equals(request.slug()) && brandRepository.existsBySlugAndDeletedAtIsNull(request.slug())) {
-         throw new AlreadyExistsException("Slug danh mục đã tồn tại");
+         throw new AlreadyExistsException("Slug thương hiệu đã tồn tại");
       }
 
       brand.setName(request.name());
@@ -74,18 +77,20 @@ public class BrandServiceImpl implements BrandService {
    }
 
    @Override
+   @Transactional
    public BrandResponse moveToTrash(String slug) {
       Brand brand = brandRepository.findBySlugAndDeletedAtIsNull(slug)
-            .orElseThrow(() -> new NotFoundException("Danh mục không tồn tại"));
+            .orElseThrow(() -> new NotFoundException("Thương hiệu không tồn tại"));
       brand.setDeletedAt(LocalDateTime.now());
       brandRepository.save(brand);
       return BrandResponse.fromEntity(brand);
    }
 
    @Override
+   @Transactional
    public BrandResponse hardDelete(String slug) {
       Brand brand = brandRepository.findBySlugAndDeletedAtIsNotNull(slug)
-            .orElseThrow(() -> new NotFoundException("Danh mục không tồn tại"));
+            .orElseThrow(() -> new NotFoundException("Thương hiệu không tồn tại trong thùng rác"));
       brandRepository.delete(brand);
       return BrandResponse.fromEntity(brand);
    }
@@ -94,66 +99,90 @@ public class BrandServiceImpl implements BrandService {
    public List<BrandResponse> getTrashBrands() {
       List<Brand> brands = brandRepository.findByDeletedAtIsNotNull();
       if (brands.isEmpty()) {
-         throw new EmptyException("Hiện tại chưa có brand nào trong thùng giác");
+         throw new EmptyException("Hiện tại chưa có thương hiệu nào trong thùng rác");
       }
-      return brands.stream().map(brand -> BrandResponse.fromEntity(brand)).toList();
+      return brands.stream().map(BrandResponse::fromEntity).toList();
    }
 
    @Override
+   @Transactional
    public BrandResponse restore(String slug) {
-      Brand brand = brandRepository.findBySlugAndDeletedAtIsNull(slug)
-            .orElseThrow(() -> new NotFoundException("Danh mục không tồn tại"));
-      brand.setDeletedAt(LocalDateTime.now());
+      // Tìm brand trong thùng rác (deletedAt IS NOT NULL) và set deletedAt về null
+      Brand brand = brandRepository.findBySlugAndDeletedAtIsNotNull(slug)
+            .orElseThrow(() -> new NotFoundException("Thương hiệu không tồn tại trong thùng rác"));
+      brand.setDeletedAt(null);
       brandRepository.save(brand);
       return BrandResponse.fromEntity(brand);
    }
 
    @Override
+   @Transactional
    public void restoreAllBrands() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'restoreAllBrands'");
+      List<Brand> trashBrands = brandRepository.findByDeletedAtIsNotNull();
+      if (trashBrands.isEmpty()) {
+         throw new EmptyException("Thùng rác đang trống, không có gì để khôi phục");
+      }
+      brandRepository.restoreAll();
    }
 
    @Override
+   @Transactional
    public void emptyTrashAllBrands() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'emptyTrashAllBrands'");
+      List<Brand> trashBrands = brandRepository.findByDeletedAtIsNotNull();
+      if (trashBrands.isEmpty()) {
+         throw new EmptyException("Thùng rác đang trống");
+      }
+      brandRepository.emptyTrash();
    }
 
    @Override
+   @Transactional
    public void softDeleteAllBrands() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'softDeleteAllBrands'");
+      List<Brand> activeBrands = brandRepository.findByDeletedAtIsNull();
+      if (activeBrands.isEmpty()) {
+         throw new EmptyException("Không có thương hiệu nào đang hoạt động để xóa");
+      }
+      brandRepository.softDeleteAll(LocalDateTime.now());
    }
 
    @Override
+   @Transactional
    public void bulkSoftDeleteBrands() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'bulkSoftDeleteBrands'");
+      // Fallback gọi hàm xóa mềm toàn bộ nếu không truyền slugs
+      softDeleteAllBrands();
    }
 
    @Override
+   @Transactional
    public void bulkHardDeleteBrands() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'bulkHardDeleteBrands'");
+      // Fallback dọn sạch thùng rác nếu không truyền slugs
+      emptyTrashAllBrands();
    }
 
    @Override
+   @Transactional
    public void bulkSoftDeleteBrands(List<String> slugs) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'bulkSoftDeleteBrands'");
+      if (slugs == null || slugs.isEmpty()) {
+         throw new EmptyException("Danh sách slug xóa mềm không được để trống");
+      }
+      brandRepository.softDeleteBySlugs(slugs, LocalDateTime.now());
    }
 
    @Override
+   @Transactional
    public void bulkHardDeleteBrands(List<String> slugs) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'bulkHardDeleteBrands'");
+      if (slugs == null || slugs.isEmpty()) {
+         throw new EmptyException("Danh sách slug xóa vĩnh viễn không được để trống");
+      }
+      brandRepository.hardDeleteBySlugs(slugs);
    }
 
    @Override
+   @Transactional
    public void bulkRestoreBrands(List<String> slugs) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'bulkRestoreBrands'");
+      if (slugs == null || slugs.isEmpty()) {
+         throw new EmptyException("Danh sách slug khôi phục không được để trống");
+      }
+      brandRepository.restoreBySlugs(slugs);
    }
-
 }

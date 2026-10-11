@@ -68,4 +68,18 @@ public class BrandController {
             .body(ApiResponse.success(ResponseCode.SUCCESS, "Đã chuyển thương hiệu vào thùng giác", brand));
    }
 
+   @DeleteMapping
+   public ResponseEntity<ApiResponse<BrandResponse>> softDeleteAll() {
+      brandService.softDeleteAllBrands();
+      return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(ResponseCode.SUCCESS, "Đã chuyển tất cả thương hiệu vào thùng giác"));
+   }
+
+   @DeleteMapping(params = "slugs")
+   public ResponseEntity<ApiResponse<BrandResponse>> bulkSoftDelete(@RequestParam(name = "slugs") List<String> slugs) {
+      brandService.bulkSoftDeleteBrands(slugs);
+      return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.success(ResponseCode.SUCCESS, "Đã chuyển thương hiệu vào thùng giác"));
+   }
+
 }
